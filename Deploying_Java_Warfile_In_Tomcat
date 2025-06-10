@@ -1,0 +1,237 @@
+DEPLOYING JAVA WEB APPLICATION ON AMAZON LINUX EC2 INSTANCE USING TOMCAT 
+
+
+
+********************************************************************************************************************
+Your steps for deploying a Java web application on an Amazon Linux EC2 instance using Tomcat are well-organized. Here’s a cleaned-up and neatly formatted version of your guide:
+
+
+Deploying Java Web Application on Amazon Linux EC2 Instance Using Tomcat
+
+1. Update the System Packages
+-->sudo yum update -y
+
+
+2. Install Utilities for Package Management
+-->sudo yum install -y yum-utils
+
+
+3. Install Java
+-->sudo yum install java-11-openjdk-devel -y
+
+
+4. Check the Version of Java
+-->java --version
+
+
+5. Steps to Install and Run Tomcat on Amazon Linux
+
+1. Create a Directory to Download Tomcat
+ -->cd /opt
+
+2. Download Tomcat
+   -->sudo wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.80/bin/apache-tomcat-9.0.80.tar.gz
+   
+
+3. Extract the Archive
+   -->sudo tar -xvzf apache-tomcat-9.0.80.tar.gz
+  
+
+4. Rename the Extracted Directory
+   
+   -->mv apache-tomcat-9.0.80 tomcat
+   
+
+5. Check Tomcat Port Configuration
+ 
+ --> sudo vi /opt/tomcat/conf/server.xml
+   
+
+6.Grant Execution Permissions
+   
+   -->sudo chown -R $(whoami):$(whoami) /opt/tomcat
+   -->sudo chmod +x /opt/tomcat/bin/*.sh
+   
+
+7. Start Tomcat
+   
+   -->/opt/tomcat/bin/startup.sh
+   
+
+8.Verify Connection
+  
+ --> sudo wget http://localhost:8080
+  
+  
+9. Check Tomcat Status
+   Open a browser and navigate to:
+   
+   -->http://<your-ec2-public-ip>:8080
+   
+
+---
+ DEPLOYING A JAVA WAR FILE
+
+1. Access the Tomcat Manager
+   - Open your web browser and go to:
+     
+     -->http://<your-server-ip>:8080/manager/html
+     
+   - Login Credentials: If you don’t have an admin username and password, follow these steps:
+   
+     1. Navigate to the Tomcat directory:
+        
+     --> cd /opt/tomcat
+   
+     2. Edit the `tomcat-users.xml` file:
+        
+        -->sudo vi conf/tomcat-users.xml
+        
+        Add the following line to create an admin user:
+     
+        --><user username="nisha" password="Bismillah" roles="manager-gui,admin-gui"/>
+        
+        Replace `"admin"` and `"adminpassword"` with your desired credentials.
+
+2. Modify `context.xml` for External Access
+   - Edit the `context.xml` file in the `manager` directory:
+    
+    -->sudo vi /opt/tomcat/webapps/manager/META-INF/context.xml
+  
+   - Modify the `RemoteAddrValve` to allow access:
+   
+     --> <!-- <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d{1,3}\.\d{1,3}\.\d{1,3}|::1"/> -->
+    
+   - **Note:** Removing the line allows access from all IPs (not recommended for production).
+
+3. Restart Tomcat
+   - Navigate to the `bin` directory:
+     
+     -->cd /opt/tomcat/bin
+    
+   - Stop Tomcat:
+     
+     -->sudo ./shutdown.sh
+     
+   - Start Tomcat:
+     
+     -->sudo ./startup.sh
+    
+
+4. Access Tomcat Manager Again
+   Now try accessing:
+   
+   -->http://<your-server-ip>:8080/manager
+   
+**************************************************************************************
+---For copying from system war file path to Linux Machine RHEL 
+COPYING WAR FILE TO EC2 INSTANCE FROM SYSTEM 
+
+1.Using SCP to Copy the WAR File
+Open a Terminal or Command Prompt:
+
+Ensure you have access to your terminal (Linux or macOS) or Command Prompt/PowerShell (Windows).
+Use the scp Command: Here’s the format for the command:
+
+  -->scp -i "path_to_your_pem_file.pem" "path_to_your_war_file.war" ec2-user@<your-ec2-public-ip>:/opt/tomcat/webapps/
+scp -i "C:\Users\nabidali\Downloads\TestEc2.pem" "C:\Users\nabidali\Downloads\SampleWebApp(1).war" ec2-user@54.86.16.149:/opt/tomcat/webapps/
+
+
+**********************************************************************************
+
+
+TRANSFER AND DEPLOY YOUR WAR FILE
+
+1. Connect to Your EC2 Instance via SSH
+   Use your SSH key to connect:
+   
+   -->ssh -i "C:\Users\nabidali\Downloads\Server1.pem" ec2-user@<your-ec2-public-ip>
+   
+
+2. Verify the Webapps Directory
+  
+   -->ls /opt/tomcat/webapps
+   
+
+3. Copy the WAR File
+   Use SCP to copy the WAR file to the Tomcat webapps directory:
+   
+   -->scp -i "C:\Users\nabidali\Downloads\Server1.pem" "C:\Users\nabidali\Downloads\SampleWebApp.war" ec2-user@3.226.239.63:/opt/tomcat/webapps/
+   ***************************************************************************************************
+   --> sudo wget https://github.com/AKSarav/SampleWebApp/raw/master/dist/SampleWebApp.war
+
+4. Restart Tomcat to Deploy the WAR File
+   - Navigate to the Tomcat `bin` directory:
+     
+     -->cd /opt/tomcat/bin
+     
+   - Stop Tomcat:
+    
+    --> sudo ./shutdown.sh
+     
+   - Start Tomcat:
+     
+     -->sudo ./startup.sh
+     
+
+5. Verify Deployment
+   Open your browser and navigate to:
+   
+   http://<your-public-ip>:8080/SampleWebApp
+   
+
+6. Check Tomcat Logs (if needed)
+   Navigate to the logs directory:
+   
+   -->cd /opt/tomcat/logs
+   
+   View the latest log file:
+   
+   -->tail -f catalina.out
+   
+
+7. Clean Up (Optional)
+   If you no longer need the WAR file:
+   
+  -->rm /opt/tomcat/webapps/SampleWebApp.war
+ 
+
+---
+
+This structured format makes it easier to follow the deployment steps. Let me know if you need any more adjustments!
+
+
+
+*********************************************************************************************************************************
+BUILD A SIMPLE JAVA WEB APPLICATION (USING MAVEN)
+
+
+If you prefer to create your own WAR file, you can use Maven, a build tool for Java. Here's how:
+
+Install Maven on your machine (if not already installed):
+-->sudo yum install maven      # For RHEL/CentOS
+
+Create a New Maven Project:
+-->sudo mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=myapp -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
+
+Build the WAR File: Navigate to the project directory and run:
+-->cd myapp
+-->mvn package
+
+Locate the WAR File: After the build, you can find the WAR file in the target/ directory of your project, for example:
+-->cd webapps
+
+Restart Tomcat to deploy the WAR file
+-->sudo /opt/tomcat/bin/shutdown.sh
+-->sudo /opt/tomcat/bin/startup.sh
+
+Access Your Application:
+Once the WAR file is deployed and Tomcat has restarted, you can access your application in the browser by visiting:
+-->http://<your-ec2-public-ip>:8080/myapp
+
+
+
+
+
+
