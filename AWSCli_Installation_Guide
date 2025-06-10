@@ -1,0 +1,57 @@
+AWS CLI InstalilationGuide , To Remove Install and update 
+
+1. ✅ Check AWS CLI version
+2. ❌ Uninstall existing AWS CLI
+3. ⬇️ Download & install the latest AWS CLI v2
+4. ⚙️ Configure AWS CLI with your credentials (`aws configure`)
+
+---
+
+1Check current AWS CLI version
+-->aws --version
+
+Expected output:
+
+aws-cli/2.x.x Python/3.x.x ...
+---
+
+2.Uninstall AWS CLI
+For Amazon Linux, RHEL, or CentOS:
+-->sudo yum remove awscli -y
+
+For Ubuntu/Debian:
+-->sudo apt remove awscli -y
+
+You can also manually remove if installed via unzip:
+-->sudo rm -rf /usr/local/aws-cli
+-->sudo rm /usr/local/bin/aws
+
+---
+
+3.Install latest AWS CLI v2**
+Download and install on Amazon Linux or RHEL-based systems:
+-->curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+-->unzip awscliv2.zip
+-->sudo ./aws/install
+
+4.To upgrade if it's already installed:
+
+-->sudo ./aws/install --update
+
+
+Then check again:
+aws --version
+
+---
+Go to AWS ACC Click on Seucurity Cfredentail and Create an Access key and secerte access key 
+
+Go To AWS Acc 
+4.Configure AWS CLI
+-->aws configure
+
+It will prompt:
+AWS Access Key ID [None]: <your-access-key-id>
+AWS Secret Access Key [None]: <your-secret-access-key>
+Default region name [None]: us-east-1
+Default output format [None]: json
+
